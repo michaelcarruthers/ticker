@@ -3,7 +3,7 @@
   "postStartCommand": "/tmp/setup.sh",
   "build": {
     "context": "..",
-    "dockerfile": "../Dockerfile"
+    "dockerfile": "Dockerfile"
   },
   "containerEnv": {
     "APIKEY": "hunter2",
