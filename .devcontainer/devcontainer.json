@@ -1,0 +1,25 @@
+{
+  "name": "ticker",
+  "postStartCommand": "/tmp/setup.sh",
+  "build": {
+    "context": "..",
+    "dockerfile": "../Dockerfile"
+  },
+  "containerEnv": {
+    "APIKEY": "hunter2",
+    "DAYS": "3",
+    "PROVIDER": "local",
+    "SYMBOL": "MSFT"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go"
+      ]
+    }
+  },
+  "mounts": [
+    "source=${localWorkspaceFolder}/.devcontainer/response.json,target=/tmp/ticker/response.json,type=bind,consistency=cached",
+    "source=${localWorkspaceFolder}/.devcontainer/setup.sh,target=/tmp/setup.sh,type=bind,consistency=cached"
+  ]
+}
