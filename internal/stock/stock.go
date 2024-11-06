@@ -38,6 +38,13 @@ type StockConfig struct {
 // StockResponse Provides the data structure to unmarshal the stock response
 type StockResponse struct {
 	TimeSeries map[string]timeseries.Index `json:"Time Series (Daily)"`
+	Metadata   struct {
+		Information   string `json:"1. Information"`
+		LastRefreshed string `json:"3. Last Refreshed"`
+		OutputSize    string `json:"4. Output Size"`
+		Symbol        string `json:"2. Symbol"`
+		TimeZone      string `json:"5. Time Zone"`
+	} `json:"Meta Data"`
 }
 
 /*
@@ -65,7 +72,7 @@ func (s *Stock) ClosePrices() (*[]float64, error) {
 ClosePricesAvg returns the average of the closing prices of the stock
 for the number of days specified
 */
-func (s *Stock) ClosePricesAvg() (*[]byte, error) {
+func (s *Stock) ClosePricesAvg() (*float64, error) {
 	prices, err := s.ClosePrices()
 	if err != nil {
 		return nil, err
@@ -75,14 +82,9 @@ func (s *Stock) ClosePricesAvg() (*[]byte, error) {
 	for _, price := range *prices {
 		total += price
 	}
-
 	avg := total / float64(len(*prices))
-	out, err := json.Marshal(avg)
-	if err != nil {
-		return nil, err
-	}
 
-	return &out, nil
+	return &avg, nil
 }
 
 // Data requests and returns the stock data from the API
@@ -118,6 +120,27 @@ func (s *Stock) TimeSeries() (*[]timeseries.TimeSeries, error) {
 		return nil, err
 	}
 
+	dates, err := s.TimeSeriesDays()
+	if err != nil {
+		return nil, nil
+	}
+
+	var entries []timeseries.TimeSeries
+	for _, date := range dates {
+		ts := *timeseries.New(date, data.TimeSeries[date])
+		entries = append(entries, ts)
+	}
+
+	return &entries, nil
+}
+
+// TimeSeriesDays a collection of dates which comprise the provided number of days
+func (s *Stock) TimeSeriesDays() ([]string, error) {
+	data, err := s.Data()
+	if err != nil {
+		return nil, err
+	}
+
 	var dates []string
 	for date := range data.TimeSeries {
 		dates = append(dates, date)
@@ -134,14 +157,42 @@ func (s *Stock) TimeSeries() (*[]timeseries.TimeSeries, error) {
 		return nil, err
 	}
 
-	var entries []timeseries.TimeSeries
+	var entries []string
 	for _, date := range sortedDates[:numDays] {
-		date := date.Format(time.DateOnly)
-		data := data.TimeSeries[date]
-		entries = append(entries, *timeseries.New(date, data))
+		entries = append(entries, date.Format(time.DateOnly))
 	}
 
-	return &entries, nil
+	return entries, nil
+}
+
+func (s Stock) ToJson() ([]byte, error) {
+	data, err := s.Data()
+	if err != nil {
+		return nil, err
+	}
+
+	avg, err := s.ClosePricesAvg()
+	if err != nil {
+		return nil, err
+	}
+
+	ts, err := s.TimeSeries()
+	if err != nil {
+		return nil, err
+	}
+
+	content := map[string]interface{}{
+		"Average":    avg,
+		"MetaData":   data.Metadata,
+		"TimeSeries": ts,
+	}
+
+	rsp, err := json.Marshal(&content)
+	if err != nil {
+		return nil, err
+	}
+
+	return rsp, err
 }
 
 // Url returns the URL of the Alpha Vantage API

@@ -11,18 +11,18 @@ import (
 func handler(w http.ResponseWriter, r *http.Request) {
 	asset := stock.New(stock.StockConfig{
 		ApiKey:   helper.EnvLookup("APIKEY"),
-		Days:     helper.EnvLookup("DAYS"),
+		Days:     helper.EnvLookup("NDAYS"),
 		Provider: helper.EnvLookup("PROVIDER"),
 		Symbol:   helper.EnvLookup("SYMBOL"),
 	})
 
-	avg, err := asset.ClosePricesAvg()
-	if err != nil {
+	rsp, err := asset.ToJson()
+	if rsp == nil || err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 	}
 
-	w.Write(*avg)
+	w.Write(rsp)
 }
 
 func main() {
