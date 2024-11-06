@@ -1,3 +1,3 @@
-module gitlab.com/michaeldcarruthers/ticker
+module github.com/michaeldcarruthers/ticker
 
 go 1.22.2
