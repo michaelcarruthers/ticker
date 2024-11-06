@@ -1,0 +1,24 @@
+version: '3'
+
+vars:
+  IMAGE_NAME: us-west1-docker.pkg.dev/cloudy-sunday/ticker/ticker
+  IMAGE_TIME: '{{now | unixEpoch}}'
+
+tasks:
+  build:app:
+    desc: Compile the application
+    cmds:
+      - go build -o ticker
+
+  container:build:
+    desc: Create the application container image
+    cmds:
+      - 'docker build -t {{.IMAGE_NAME}}:{{.IMAGE_TIME}} .'
+      - 'docker tag {{.IMAGE_NAME}}:{{.IMAGE_TIME}} {{.IMAGE_NAME}}:latest'
+
+  container:push:
+    desc: Push the application container image to the registry
+    cmds:
+      - 'docker push {{.IMAGE_NAME}}:{{.IMAGE_TIME}}'
+    deps:
+      - container:build
