@@ -7,7 +7,7 @@
   },
   "containerEnv": {
     "APIKEY": "hunter2",
-    "DAYS": "3",
+    "NDAYS": "3",
     "PROVIDER": "local",
     "SYMBOL": "MSFT"
   },
