@@ -95,6 +95,7 @@ func (s *Stock) Data() (*StockResponse, error) {
 	}
 	defer rsp.Body.Close()
 
+	// The Alpha Vantage API returns a 200 status code even when the API is rate limited
 	if rsp.StatusCode != http.StatusOK {
 		return nil, err
 	}
