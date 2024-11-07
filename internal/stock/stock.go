@@ -113,7 +113,7 @@ func (s *Stock) Data() (*StockResponse, error) {
 	return &stockData, nil
 }
 
-// Timeseries returns a collection of time series data associated with the stock
+// TimeSeries returns a collection of time series data associated with the stock
 func (s *Stock) TimeSeries() (*[]timeseries.TimeSeries, error) {
 	data, err := s.Data()
 	if err != nil {
