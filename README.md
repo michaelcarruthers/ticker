@@ -36,3 +36,8 @@ pushing the container image by running:
 ```bash
 task
 ```
+
+## Issues
+
+The Advantage API returns `200` regardless if the API key has been rate limited.
+As a result, `ticker` will panic.
