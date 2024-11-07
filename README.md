@@ -62,3 +62,15 @@ kubectl apply -f deploy ticker.k8s.yaml
 
 The Advantage API returns `200` regardless if the API key has been rate limited.
 As a result, `ticker` will panic.
+
+## Resilience
+
+The resiliency of `ticker` can be improved for production through the 
+addition of:
+
+* Caching
+* Contexts
+* Logging
+* Signal handling
+* Tests
+* Timeouts
