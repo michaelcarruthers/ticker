@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app: ticker
+    env: dev
+  name: ticker
+  namespace: ticker
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app: ticker
+    env: dev
+  name: ticker
+  namespace: ticker
+stringData:
+  APIKEY: "REPLACE_ME"
+  NDAYS: "5"
+  SYMBOL: MSFT
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ticker
+    env: dev
+  name: ticker
+  namespace: ticker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ticker
+      env: dev
+  template:
+    metadata:
+      labels:
+        app: ticker
+        env: dev
+      name: ticker
+      namespace: ticker
+    spec:
+      containers:
+        - env:
+            - name: NDAYS
+              value: "5"
+          envFrom:
+            - secretRef:
+                name: ticker
+          image: us-west1-docker.pkg.dev/cloudy-sunday/ticker/ticker:latest
+          name: ticker
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ticker
+    env: dev
+  name: ticker
+  namespace: ticker
+spec:
+  ports:
+    - name: ticker
+      port: 8080
+  selector:
+    app: ticker
+    env: dev

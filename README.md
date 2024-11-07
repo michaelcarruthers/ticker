@@ -37,6 +37,27 @@ pushing the container image by running:
 task
 ```
 
+### Deploy
+
+The deployment leverages Kubernetes, and creates the following resources:
+
+* deployment
+* namespace
+* service
+
+The Kubernetes manifest can be found within the `deploy/` directory.
+Before deploying ensure you have updated the manifest to include:
+
+* `APIKEY`: Alpha Vantage API key (default: REPLACE_ME)
+* `NDAYS`: Number of days (default: 3)
+* `SYMBOL`: Stock symbol (default: MSFT)
+
+To deploy `ticker` run:
+
+```
+kubectl apply -f deploy ticker.k8s.yaml
+```
+
 ## Issues
 
 The Advantage API returns `200` regardless if the API key has been rate limited.
