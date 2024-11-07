@@ -58,6 +58,10 @@ To deploy `ticker` run:
 kubectl apply -f deploy ticker.k8s.yaml
 ```
 
+Note: The Kubernetes manifest is produced via [cdk8s](https://cdk8s.io/). The
+repository containing the code that generated the manifest can be found 
+[here](https://github.com/michaelcarruthers/cdk8s-ticker).
+
 ## Issues
 
 The Advantage API returns `200` regardless if the API key has been rate limited.
