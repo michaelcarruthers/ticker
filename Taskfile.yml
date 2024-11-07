@@ -5,13 +5,25 @@ vars:
   IMAGE_TIME: '{{now | unixEpoch}}'
 
 tasks:
-  build:app:
+  default:
+    desc: Build and push the application and container image
+    cmds:
+      - task app:build
+      - task container:build
+      - task container:push
+
+  app:build:
     desc: Compile the application
+    env:
+      GOOS: linux
+      GOARCH: arm64
     cmds:
       - go build -o ticker
 
   container:build:
     desc: Create the application container image
+    deps:
+      - app:build
     cmds:
       - 'docker build -t {{.IMAGE_NAME}}:{{.IMAGE_TIME}} .'
       - 'docker tag {{.IMAGE_NAME}}:{{.IMAGE_TIME}} {{.IMAGE_NAME}}:latest'
@@ -20,5 +32,6 @@ tasks:
     desc: Push the application container image to the registry
     cmds:
       - 'docker push {{.IMAGE_NAME}}:{{.IMAGE_TIME}}'
+      - 'docker push {{.IMAGE_NAME}}:latest'
     deps:
       - container:build
