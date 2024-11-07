@@ -16,8 +16,8 @@ metadata:
   name: ticker
   namespace: ticker
 stringData:
-  APIKEY: "REPLACE_ME"
-  NDAYS: "5"
+  APIKEY: REPLACE_ME
+  NDAYS: "3"
   SYMBOL: MSFT
 ---
 apiVersion: apps/v1
@@ -43,10 +43,7 @@ spec:
       namespace: ticker
     spec:
       containers:
-        - env:
-            - name: NDAYS
-              value: "5"
-          envFrom:
+        - envFrom:
             - secretRef:
                 name: ticker
           image: us-west1-docker.pkg.dev/cloudy-sunday/ticker/ticker:latest
