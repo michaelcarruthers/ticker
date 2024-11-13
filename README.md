@@ -78,3 +78,4 @@ addition of:
 * Signal handling
 * Tests
 * Timeouts
+* Client disconnect handling
